@@ -1,0 +1,25 @@
+@startuml
+left to right direction
+
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+
+title ИТ система компании Медикаменте MVP
+
+Person(Adminstrator, "Администратор", "Администратор ресепшена")
+Person_Ext(Client, "Пациент", "Пациент запись на прием, оплаты, сдача анализов")
+
+System_Boundary(MedicamenteSystem, "ИТ система Медикаменте") {
+    Container(ClientPortal, "Портал для клиентов", "SPA", "WEB приложение для записи на приём, просмотр истории записей")
+    Container(ReseptionPortal, "Портал для сотрудников ресепшена.", "SPA", "WEB приложение для администраторов. Для записи на приём, просмотр истории записей")
+    Container(BackendCore, "Backend System", "Backend Java", "Backend приложение с логикой сценариев. API для SPA приложений. Разделение доступов RBAC, контроль jwt токены")
+    ContainerDb(DB, "СУБД PostgreSql", "PostgreSql", "Данные о записях пациентов")
+
+}
+
+Rel(Client, ClientPortal, "Запись на приём", "HTTPS")
+Rel(Client, ClientPortal, "Просмотр истории посещений", "HTTPS")
+Rel(Adminstrator, ReseptionPortal, "Запись на приём. Просмотр ближайших записей для напоминания клиентам", "HTTPS")
+Rel(ClientPortal, BackendCore, "API взаимодействие", "HTTPS")
+Rel(ReseptionPortal, BackendCore, "API взаимодействие", "HTTPS")
+Rel(BackendCore, DB, "Сохранение и чтение данных")
+@enduml
